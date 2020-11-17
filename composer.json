@@ -1,0 +1,88 @@
+{
+  "name": "addventures/devops",
+  "description": "The devops automation tooling.",
+  "type": "project",
+  "license": "GPL-2.0+",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "discard-changes": true,
+    "sort-packages": true,
+    "preferred-install": {
+      "*": "source"
+    }
+  },
+  "repositories": {
+    "drupal": {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    },
+    "asset-packagist": {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  },
+  "require": {
+    "acquia/blt": "^11.0",
+    "phpro/grumphp-shim": "^1.1",
+    "typhonius/acquia-php-sdk-v2": "^2.0"
+  },
+  "autoload": {
+    "classmap": [
+      "./var/composer/plugin/ComposerHandler.php"
+    ],
+    "psr-4": {
+      "Add\\": "blt/src/"
+    }
+  },
+  "scripts": {
+    "blt-alias": "blt blt:init:shell-alias -y --ansi"
+  },
+  "extra": {
+    "enable-patching": true,
+    "composer-exit-on-patch-failure": true,
+    "patches": {},
+    "installer-types": [
+      "bower-asset",
+      "npm-asset",
+      "drupal-library"
+    ],
+    "installer-paths": {
+      "docroot/core": [
+        "type:drupal-core"
+      ],
+      "docroot/modules/contrib/{$name}": [
+        "type:drupal-module"
+      ],
+      "docroot/profiles/contrib/{$name}": [
+        "type:drupal-profile"
+      ],
+      "docroot/themes/contrib/{$name}": [
+        "type:drupal-theme"
+      ],
+      "docroot/libraries/{$name}": [
+        "type:drupal-library",
+        "type:bower-asset",
+        "type:npm-asset"
+      ],
+      "drush/contrib/{$name}": [
+        "type:drupal-drush"
+      ],
+      "docroot/modules/custom/{$name}": [
+        "type:drupal-custom-module"
+      ],
+      "docroot/modules/custom/pww/{$name}": [
+        "type:pww-component"
+      ],
+      "docroot/profiles/custom/{$name}": [
+        "type:drupal-custom-profile"
+      ],
+      "docroot/themes/custom/{$name}": [
+        "type:drupal-custom-theme"
+      ],
+      "drush/Commands/{$name}": [
+        "type:drupal-drush"
+      ]
+    }
+  }
+}
