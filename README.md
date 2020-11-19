@@ -110,7 +110,7 @@ BackstopJS @todo.
 
 ## Command reference
 
-### BLT commands
+### add (this project) commands
 
 Command | Description | Examples
 --- | --- | ---
