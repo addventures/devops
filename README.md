@@ -122,6 +122,17 @@ p start | Start a set of containers for a project. | `fin p start`
 p start | Start a set of containers for a project. | `fin p start`
 p start | Start a set of containers for a project. | `fin p start`
 
+### Docker commands
+
+Sometimes you may want to use Docker directly and bypass Docksal's `fin`.
+
+Command | Description | Examples
+--- | --- | ---
+ps -a | Show all containers. | `docker ps -a`
+ps -a | Show all containers. | `docker ps -a`
+ps -a | Show all containers. | `docker ps -a`
+ps -a | Show all containers. | `docker ps -a`
+
 ### Drush commands
 
 Command | Description | Examples
