@@ -1,0 +1,16 @@
+platform:
+  cvs_hub:
+    git_url: ''
+    ace_app_id: ''
+    template: null
+  omnicare:
+    git_url: ''
+    ace_app_id: ''
+    template: null
+template:
+  hastings:
+    git:
+      url: http://github.com/
+    ace:
+      app_id: todo
+      env_id: todo

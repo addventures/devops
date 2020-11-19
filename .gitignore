@@ -31,7 +31,6 @@ docroot/themes/custom/*/styleguide
 # Ignore build artifacts
 deployment_identifier
 /deploy
-bin/*
 tmp
 reports
 /travis_wait*
