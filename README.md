@@ -72,6 +72,14 @@ d41c9df08b8b        docksal/dns:1.1           "docker-entrypoint.s…"   22 hour
 6397f5e05fad        docksal/vhost-proxy:1.6   "docker-entrypoint.s…"   22 hours ago        Up 22 hours (healthy)   192.168.64.100:80->80/tcp, 192.168.64.100:443->443/tcp   docksal-vhost-proxy
 ```
 
+#### Hostnames
+
+Hostname | Purpose
+--- | ---
+PROJECTNAME.local | Access to Drupal.
+mail.PROJECTNAME.local | Mailhog interface that catches outbound e-mails.
+solr.PROJECTNAME.local | Solr admin interface.
+
 ### CI/CD
 
 Acquia Pipelines @todo.
@@ -101,6 +109,17 @@ GrumPHP @todo.
 BackstopJS @todo.
 
 ## Command reference
+
+### BLT commands
+
+Command | Description | Examples
+--- | --- | ---
+sys:init | Initialize local host system. | `add sys:init`
+platform:init | Create a new platform in the system. | `add platform:init`
+platform:add | Add an existing platform to your environment. | `add platform:add`
+sys:init | Initialize local host system. | `add sys:init`
+platform:init | Create a new platform in the system. | `add platform:init`
+platform:add | Add an existing platform to your environment. | `add platform:add`
 
 ### BLT commands
 

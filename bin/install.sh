@@ -25,5 +25,10 @@ fi
 # Run composer install.
 
 # Add global symlink to add command.
+path_add_symlink="/usr/local/bin/add"
+path_add_symlink_target="${HOME}/sys/project/devops/vendor/bin/blt"
+if [ -L ${my_link} ] ; then
+  sudo ln -s "${path_add_symlink_target}" "${path_add_symlink}"
+fi
 
 # add Run sys:init

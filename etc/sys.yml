@@ -1,16 +1,20 @@
 platform:
   cvs_hub:
+    label: "CVS Hub"
     git_url: ''
     ace_app_id: ''
     template: null
   omnicare:
+    label: "Omnicare"
     git_url: ''
     ace_app_id: ''
     template: null
 template:
   hastings:
+    label: "Hastings"
     git:
-      url: http://github.com/
+      url: git@github.com:addventures/hastings.git
+      branch: refactor
     ace:
-      app_id: todo
-      env_id: todo
+      app_id: d4195387-95f4-4ec0-a480-fecfa772e144
+      env_id: 82558-d4195387-95f4-4ec0-a480-fecfa772e144
