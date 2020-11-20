@@ -14,9 +14,13 @@ use Symfony\Component\Finder\Finder;
 class InitCommand extends BaseCommand {
 
   /**
-   * Initializes the full system.
+   * Initializes the local host system.
+   *
+   * @param array $options
+   *   The command options.
    *
    * @command sys:init
+   * @throws \Exception
    */
   public function init($options = [
     'full_name' => FALSE,
@@ -28,25 +32,26 @@ class InitCommand extends BaseCommand {
     $this->notice("Initializing local host system.");
 
     $inputs = [
-      'full_name' => "Full Name",
-      'email' => "Email Address",
-      'ace_api_key' => "Acquia Cloud API v2 Key (https://cloud.acquia.com/a/profile/tokens)",
-      'ace_api_secret' => "Acquia Cloud API v2 Secret (https://cloud.acquia.com/a/profile/tokens)",
-      "github_token" => "Github Personal Access Token (https://github.com/settings/tokens/new?scopes=repo,workflow&description=Addventures%20DevOps%20Tooling)"
+      'full_name' => [
+        'label' => "Full Name",
+      ],
+      'email' => [
+        'label' => "Email Address",
+      ],
+      'ace_api_key' => [
+        'label' => "Acquia Cloud API v2 Key (https://cloud.acquia.com/a/profile/tokens)",
+      ],
+      'ace_api_secret' => [
+        'label' => "Acquia Cloud API v2 Secret (https://cloud.acquia.com/a/profile/tokens)",
+      ],
+      "github_token" => [
+        'label' => "Github Personal Access Token (https://github.com/settings/tokens/new?scopes=repo,workflow&description=Addventures%20DevOps%20Tooling)",
+      ]
     ];
 
     $defaults = $this->getConfigEnv();
 
-    foreach ($inputs as $option_id => $option_label) {
-
-      if (!empty($options[$option_id])) {
-        continue;
-      }
-
-      $default = isset($defaults[$option_id]) ? $defaults[$option_id] : NULL;
-      $options[$option_id] = $this->io()->askQuestion(new Question("Enter {$option_label}", $default));
-
-    }
+    $options = $this->buildInput($inputs, $options, $defaults);
 
     $env_config = [];
     foreach ($inputs as $input_id => $input_label) {

@@ -14,13 +14,19 @@ class AddCommand extends BaseCommand {
   /**
    * Add a new platform.
    *
+   * @param array $options
+   *   The command options.
+   *
    * @command platform:add
    */
   public function add($options = [
     'ni' => FALSE,
   ]) {
-    $this->notice("Resetting all docker containers, images, and volumes.");
-    $this->success("stack:reset ran okay");
+    $this->notice("Adding platform.");
+
+    // Add hosts.
+
+    $this->success("Added platform successfully.");
   }
 
 }

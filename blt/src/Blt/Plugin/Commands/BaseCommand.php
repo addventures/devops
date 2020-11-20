@@ -4,6 +4,7 @@ namespace Add\Blt\Plugin\Commands;
 
 use Acquia\Blt\Robo\BltTasks;
 use Add\Blt\Plugin\Traits\IoTrait;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
@@ -120,6 +121,46 @@ class BaseCommand extends BltTasks {
     }
 
     return $path;
+  }
+
+  /**
+   * @param array $inputs
+   * @param array $return
+   * @param array $defaults
+   *
+   * @return array
+   * @throws \Exception
+   */
+  protected function buildInput(array $inputs, array $return = [], array $defaults = []) {
+    foreach ($inputs as $option_id => $option_config) {
+
+      if (!empty($return[$option_id])) {
+        continue;
+      }
+
+      $default = isset($defaults[$option_id]) ? $defaults[$option_id] : NULL;
+
+      if (!empty($option_config['type'])) {
+
+        switch ($option_config['type']) {
+
+          case 'choice':
+            $return[$option_id] = $this->io()->choice($option_config['label'], $option_config['choice'], $default);
+            break;
+
+          default:
+            throw new \Exception("Invalid input type: {$option_config['type']}");
+            break;
+
+        }
+
+      }
+      else {
+        $return[$option_id] = $this->io()->askQuestion(new Question("Enter {$option_config['label']}", $default));
+      }
+
+    }
+    return $return;
   }
 
 }

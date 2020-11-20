@@ -3,9 +3,16 @@
 The purpose of this project is to provide formal DevOps management for a set of
 Drupal instances (platforms) and multisites (apps) owned by an organization.
 
-## Install
+## Overview
 
-Run the below from your host OSX terminal:
+## Host machine support
+
+1. OSX/MAC
+2. Windows 10 WSL
+
+### Install
+
+Run the below from your host OSX or Windows 10 WSL terminal:
 
 ```
 sh -c "$(curl -fsSL https://raw.github.com/addventures/devops/bin/install.sh)"
@@ -16,8 +23,8 @@ This process will:
 1. Confirm local host dependencies such as composer.
 1. Clone this project to ~/sys/project/devops
 1. Run composer install for this project.
-1. Symlink an `add` command to `/usr/local/bin` to call this project.
-1. Run `sys:init` command to configure your local environment.
+1. Symlink an `add` executable file at `/usr/local/bin` to call this project anywhere on local host.
+1. Run `add sys:init` command to configure your local environment.
 
 ## Environments
 
@@ -41,7 +48,7 @@ Path | Purpose
 Local Drupal environments run in a set of Docker containers managed by Docksal.
 
 Docksal is a wrapper to Docker that abstracts much of its complexity to a
-simple interface of developer commands.
+simple interface of developer commands using its `fin` executable.
 
 Docksal provides a set of stack configurations aligned with several cloud
 providers, including Acquia. So we use their [Acquia stack configuration](https://docs.docksal.io/stack/zero-configuration/).
@@ -79,6 +86,17 @@ Hostname | Purpose
 PROJECTNAME.local | Access to Drupal.
 mail.PROJECTNAME.local | Mailhog interface that catches outbound e-mails.
 solr.PROJECTNAME.local | Solr admin interface.
+
+#### Multi-environment support
+
+Sometimes, it helps to have multiple local environments for the same platform.
+This is a common need when working on multiple tracks of work that conflict. So
+we provide support for any number of local environments for the same platform.
+
+#### Adding a new platform
+
+1. Run: `add platform:init`
+1. Open PR to merge ~/sys/project/devops in to addventures/devops.
 
 ### CI/CD
 

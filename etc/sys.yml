@@ -16,5 +16,5 @@ template:
       url: git@github.com:addventures/hastings.git
       branch: refactor
     ace:
-      app_id: d4195387-95f4-4ec0-a480-fecfa772e144
-      env_id: 82558-d4195387-95f4-4ec0-a480-fecfa772e144
+      app_id: 976b0619-518d-4ee9-80e6-65e200ddb018
+      env_id: 311279-976b0619-518d-4ee9-80e6-65e200ddb018
