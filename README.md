@@ -8,7 +8,7 @@ Drupal instances (platforms) and multisites (apps) owned by an organization.
 ### Host machine support
 
 1. OSX/MAC
-2. Windows 10 WSL
+2. Windows 10 WSL/Ubuntu 16.04+ on Windows
 
 ### Install
 
