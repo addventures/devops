@@ -2,25 +2,24 @@
 
 namespace Add\Blt\Plugin\Commands\App;
 
-use Symfony\Component\Console\Input\InputOption;
-use Robo\Contract\VerbosityThresholdInterface;
 use Add\Blt\Plugin\Commands\BaseCommand;
 
 /**
- * Defines commands in the "stack:reset:*" namespace.
+ * Defines the "app:delete" command.
  */
 class DeleteCommand extends BaseCommand {
 
   /**
    * Deletes an existing app from a platform.
    *
+   * @param array $options
+   *   The command options.
+   *
    * @command app:delete
    */
-  public function delete($options = [
+  public function exec($options = [
     'ni' => FALSE,
   ]) {
-    $this->notice("Resetting all docker containers, images, and volumes.");
-    $this->success("stack:reset ran okay");
   }
 
 }

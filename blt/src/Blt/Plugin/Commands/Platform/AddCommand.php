@@ -2,12 +2,11 @@
 
 namespace Add\Blt\Plugin\Commands\Platform;
 
-use Symfony\Component\Console\Input\InputOption;
-use Robo\Contract\VerbosityThresholdInterface;
 use Add\Blt\Plugin\Commands\BaseCommand;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Defines commands in the "stack:reset:*" namespace.
+ * Defines the "platform:add" command.
  */
 class AddCommand extends BaseCommand {
 
@@ -18,15 +17,53 @@ class AddCommand extends BaseCommand {
    *   The command options.
    *
    * @command platform:add
+   *
+   * @throws \Exception
    */
-  public function add($options = [
-    'ni' => FALSE,
+  public function exec($options = [
+    'platform' => InputOption::VALUE_OPTIONAL,
+    'id' => InputOption::VALUE_OPTIONAL,
+    'label' => InputOption::VALUE_OPTIONAL,
+    'hostname' => InputOption::VALUE_OPTIONAL,
+    'sync' => TRUE,
   ]) {
-    $this->notice("Adding platform.");
 
-    // Add hosts.
+    $inputs = [
+      'platform' => [
+        'label' => "Platform",
+        'type' => 'choice',
+        'choice' => $this->getOptionSysPlatform(),
+      ],
+      'label' => [
+        'label' => "Acquia Cloud Application UUID",
+      ],
+    ];
 
-    $this->success("Added platform successfully.");
+    $defaults = [];
+
+    $options = $this->buildInput($inputs, $options, $defaults);
+
+    if (empty($options['id'])) {
+      $options['id'] = $options['platform'];
+    }
+
+    if (empty($options['hostname'])) {
+      $options['hostname'] = "{$options['id']}.local";
+    }
+
+    // Add to env.yml.
+    $config_env = $this->getConfigEnv()->export();
+    $config_env['platform'][$options['id']] = [
+      'id' => $options['id'],
+      'platform' => $options['platform'],
+      'hostname' => $options['hostname'],
+      'created' => $this->getDateString(),
+      'role' => 'dev',
+    ];
+    $this->setConfigEnv($config_env);
+
+    // Add host.
+
   }
 
 }

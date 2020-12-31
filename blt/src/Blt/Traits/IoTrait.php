@@ -1,6 +1,6 @@
 <?php
 
-namespace Add\Blt\Plugin\Traits;
+namespace Add\Blt\Traits;
 
 use Acquia\Blt\Robo\Common\Io;
 

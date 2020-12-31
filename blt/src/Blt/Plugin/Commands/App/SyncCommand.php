@@ -2,25 +2,24 @@
 
 namespace Add\Blt\Plugin\Commands\App;
 
-use Symfony\Component\Console\Input\InputOption;
-use Robo\Contract\VerbosityThresholdInterface;
 use Add\Blt\Plugin\Commands\BaseCommand;
 
 /**
- * Defines commands in the "stack:reset:*" namespace.
+ * Defines the "app:sync" command.
  */
 class SyncCommand extends BaseCommand {
 
   /**
    * Syncs a single app.
    *
+   * @param array $options
+   *   The command options.
+   *
    * @command app:sync
    */
-  public function info($options = [
+  public function exec($options = [
     'ni' => FALSE,
   ]) {
-    $this->notice("Resetting all docker containers, images, and volumes.");
-    $this->success("stack:reset ran okay");
   }
 
 }

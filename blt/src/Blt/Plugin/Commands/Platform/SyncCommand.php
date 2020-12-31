@@ -2,25 +2,24 @@
 
 namespace Add\Blt\Plugin\Commands\Platform;
 
-use Symfony\Component\Console\Input\InputOption;
-use Robo\Contract\VerbosityThresholdInterface;
 use Add\Blt\Plugin\Commands\BaseCommand;
 
 /**
- * Defines commands in the "stack:reset:*" namespace.
+ * Defines the "platform:sync" command.
  */
 class SyncCommand extends BaseCommand {
 
   /**
    * Sync a platform across environments, including database and managed files.
    *
+   * @param array $options
+   *   The command options.
+   *
    * @command platform:sync
    */
-  public function info($options = [
+  public function exec($options = [
     'ni' => FALSE,
   ]) {
-    $this->notice("Resetting all docker containers, images, and volumes.");
-    $this->success("stack:reset ran okay");
   }
 
 }

@@ -2,25 +2,28 @@
 
 namespace Add\Blt\Plugin\Commands\Env;
 
-use Symfony\Component\Console\Input\InputOption;
-use Robo\Contract\VerbosityThresholdInterface;
 use Add\Blt\Plugin\Commands\BaseCommand;
 
 /**
- * Defines commands in the "stack:reset:*" namespace.
+ * Defines the "env:info" command.
  */
 class InfoCommand extends BaseCommand {
 
   /**
    * Prints information about the current environment context.
    *
+   * @param array $options
+   *   The command options.
+   *
    * @command env:info
    */
-  public function info($options = [
+  public function exec($options = [
     'ni' => FALSE,
   ]) {
-    $this->notice("Resetting all docker containers, images, and volumes.");
-    $this->success("stack:reset ran okay");
+
+    $config = $this->getConfigEnv()->export();
+    $this->printArrayAsTable($config);
+
   }
 
 }

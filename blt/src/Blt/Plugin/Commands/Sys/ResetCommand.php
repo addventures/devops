@@ -6,19 +6,23 @@ use Robo\Contract\VerbosityThresholdInterface;
 use Add\Blt\Plugin\Commands\BaseCommand;
 
 /**
- * Defines commands in the "stack:init:*" namespace.
+ * Defines the "sys:reset" command.
  */
 class ResetCommand extends BaseCommand {
 
   /**
    * Resets the full system.
    *
+   * @param array $options
+   *   The command options.
+   *
    * @command sys:reset
+   *
+   * @throws \Robo\Exception\TaskException
    */
-  public function reset($options = [
+  public function exec($options = [
     'ni' => FALSE,
   ]) {
-    $this->say("Resetting all docker containers, images, and volumes.");
     $this->taskExecStack()
       ->dir($this->pathPlatform)
       ->setVerbosityThreshold(VerbosityThresholdInterface::VERBOSITY_VERBOSE)
@@ -27,7 +31,6 @@ class ResetCommand extends BaseCommand {
       ->exec("docker volume rm $(docker volume ls -q)")
       ->exec("docker rmi $(docker images -a -q)")
       ->run();
-    $this->yell("sys:reset ran okay");
   }
 
 }

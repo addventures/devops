@@ -2,25 +2,30 @@
 
 namespace Add\Blt\Plugin\Commands\Platform;
 
-use Symfony\Component\Console\Input\InputOption;
-use Robo\Contract\VerbosityThresholdInterface;
 use Add\Blt\Plugin\Commands\BaseCommand;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Defines commands in the "stack:reset:*" namespace.
+ * Defines the "platform:delete" command.
  */
 class DeleteCommand extends BaseCommand {
 
   /**
    * Delete an existing platform.
    *
+   * @param array $options
+   *   The command options.
+   *
    * @command platform:delete
    */
-  public function delete($options = [
-    'ni' => FALSE,
+  public function exec($options = [
+    'platform' => InputOption::VALUE_OPTIONAL,
   ]) {
-    $this->notice("Resetting all docker containers, images, and volumes.");
-    $this->success("stack:reset ran okay");
+
+    if (empty($options['platform'])) {
+      $options['platform'] = $this->io()->choice("Select a platform", $this->getOptionEnvPlatform());
+    }
+
   }
 
 }

@@ -26,6 +26,18 @@ This process will:
 1. Symlink an `add` executable file at `/usr/local/bin` to call this project anywhere on local host.
 1. Run `add sys:init` command to configure your local environment.
 
+### Open source integrations
+
+Project | Integration
+--- | ---
+[Acquia BLT](https://docs.acquia.com/blt) | Formalizes CLI processes/scripts as commands, or structured PHP classes, with full open source support in a standard interface.
+[Docksal](https://docksal.io/) | Wraps Docker to orchestrate its images/containers/volumes/networks around Drupal, abstracting its complexity to a simple developer interface.
+[Symfony Console](https://symfony.com/doc/current/components/console.html) | Defines an interface of commands for CLI.
+[GrumPHP](https://github.com/phpro/grumphp) | Validates workflow and coding standards based on [configuration](https://github.com/addventures/devops/blob/master/grumphp.yml).
+[Other projects](https://github.com/addventures/devops/blob/master/composer.lock) | Read more
+phpcs | Todo
+phpcbf | Todo
+
 ## Environments
 
 ### Local
@@ -95,6 +107,8 @@ we provide support for any number of local environments for the same platform.
 
 #### Adding a new platform
 
+1. Create new ACE application.
+1. Create new Github repo.
 1. Run: `add platform:init`
 1. Open PR to merge ~/sys/project/devops in to addventures/devops.
 

@@ -2,14 +2,10 @@
 
 namespace Add\Blt\Plugin\Commands\Sys;
 
-use Symfony\Component\Console\Input\InputOption;
-use Robo\Contract\VerbosityThresholdInterface;
 use Add\Blt\Plugin\Commands\BaseCommand;
-use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Finder\Finder;
 
 /**
- * Defines commands in the "stack:init:*" namespace.
+ * Defines the "sys:init" command.
  */
 class InitCommand extends BaseCommand {
 
@@ -22,14 +18,13 @@ class InitCommand extends BaseCommand {
    * @command sys:init
    * @throws \Exception
    */
-  public function init($options = [
+  public function exec($options = [
     'full_name' => FALSE,
     'email' => FALSE,
     'ace_api_key' => FALSE,
     'ace_api_secret' => FALSE,
     'github_token' => FALSE,
   ]) {
-    $this->notice("Initializing local host system.");
 
     $inputs = [
       'full_name' => [
@@ -49,7 +44,7 @@ class InitCommand extends BaseCommand {
       ]
     ];
 
-    $defaults = $this->getConfigEnv();
+    $defaults = $this->getConfigEnv()->export();
 
     $options = $this->buildInput($inputs, $options, $defaults);
 
@@ -92,15 +87,9 @@ class InitCommand extends BaseCommand {
 
     $path_ssh = $this->getPath("ssh");
 
-    $finder = new Finder();
-    $finder->in($path_ssh)
-      ->files();
+    $files = $this->fs->getFilesInPath($path_ssh, "*.pub");
 
-    foreach ($finder->getIterator() as $file_path => $file_info) {
-      if (!fnmatch("*.pub", $file_path)) {
-       continue;
-      }
-
+    foreach ($files as $file_path => $file_path) {
       $file_path_private_key = substr($file_path, 0, strlen($file_path) - 4);
       if ($this->fs->exists($file_path_private_key)) {
         $ssh_key_paths[] = $file_path_private_key;
