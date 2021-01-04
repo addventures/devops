@@ -46,6 +46,11 @@ if [ ! -d "${devops_path}" ]; then
   git clone "${devops_git_url}" "${devops_path}"
 fi
 
+# Always auto updated.
+cd "${devops_path}"
+git pull origin master
+cd -
+
 # Run composer install.
 cd "${devops_path}"
 composer install
