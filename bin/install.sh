@@ -53,7 +53,7 @@ composer install
 # Add global symlink to add command.
 path_add_symlink="/usr/local/bin/add"
 path_add_symlink_target="${devops_path}/vendor/bin/blt"
-if [ -L ${path_add_symlink} ] ; then
+if [ ! -L ${path_add_symlink} ] ; then
   sudo ln -s "${path_add_symlink_target}" "${path_add_symlink}"
 fi
 
