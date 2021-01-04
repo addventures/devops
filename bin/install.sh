@@ -18,6 +18,9 @@ if ! [ -x "$(command -v brew)" ]; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
+# Confirm brew version of php.
+brew install php@7.4
+
 if ! [ -x "$(command -v composer)" ]; then
   brew install composer
 fi
