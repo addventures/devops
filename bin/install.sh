@@ -40,7 +40,9 @@ fi
 # Clone this project to ~/sys/project/devops.
 devops_git_url="https://github.com/addventures/devops.git"
 devops_path="${HOME}/sys/project/devops"
-git clone "${devops_git_url}" "${devops_path}"
+if [ ! -d "${devops_path}" ]; then
+  git clone "${devops_git_url}" "${devops_path}"
+fi
 
 # Run composer install.
 cd "${devops_path}"
@@ -49,7 +51,7 @@ composer install
 # Add global symlink to add command.
 path_add_symlink="/usr/local/bin/add"
 path_add_symlink_target="${devops_path}/vendor/bin/blt"
-if [ -L ${my_link} ] ; then
+if [ -L ${path_add_symlink} ] ; then
   sudo ln -s "${path_add_symlink_target}" "${path_add_symlink}"
 fi
 
