@@ -15,7 +15,7 @@ Drupal instances (platforms) and multisites (apps) owned by an organization.
 Run the below from your host OSX or Windows 10 WSL terminal:
 
 ```
-sh -c "$(curl -fsSL https://raw.github.com/addventures/devops/bin/install.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/addventures/devops/master/bin/install.sh)"
 ```
 
 This process will:
