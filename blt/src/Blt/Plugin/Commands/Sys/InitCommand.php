@@ -92,7 +92,7 @@ class InitCommand extends BaseCommand {
 
     $files = $this->fs->getFilesInPath($path_ssh, "*.pub");
 
-    foreach ($files as $file_path => $file_path) {
+    foreach ($files as $file_delta => $file_path) {
       $file_path_private_key = substr($file_path, 0, strlen($file_path) - 4);
       if ($this->fs->exists($file_path_private_key)) {
         $ssh_key_paths[] = $file_path_private_key;

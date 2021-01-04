@@ -19,10 +19,11 @@ if ! [ -x "$(command -v brew)" ]; then
 fi
 
 # Confirm brew version of php.
-path_profile="${HOME}/.profile"
+path_profile="${HOME}/.bashrc"
 touch "${path_profile}"
 if ! grep -q "/usr/local/opt/php@7.4" "${path_profile}"; then
   brew install php@7.4
+  /usr/local/opt/php@7.4/bin/pecl install xdebug-2.9.0
   echo 'export PATH="/usr/local/opt/php@7.4/bin:$PATH"' >> "${path_profile}"
   echo 'export PATH="/usr/local/opt/php@7.4/sbin:$PATH"' >> "${path_profile}"
 fi
