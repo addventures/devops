@@ -25,7 +25,6 @@ fi
 # On OSX, running git without git installed prompts the xcode install.
 git
 
-bash <(curl -fsSL https://get.docksal.io)
 if ! [ -x "$(command -v fin)" ]; then
   bash <(curl -fsSL https://get.docksal.io)
 fi
