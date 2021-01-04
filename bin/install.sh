@@ -19,7 +19,11 @@ if ! [ -x "$(command -v brew)" ]; then
 fi
 
 # Confirm brew version of php.
+if ! grep -q "PATH="/usr/local/opt/php@7.4" "~/.profile"; then
 brew install php@7.4
+  echo 'export PATH="/usr/local/opt/php@7.4/bin:$PATH"' >> ~/.profile
+  echo 'export PATH="/usr/local/opt/php@7.4/sbin:$PATH"' >> ~/.profile
+fi
 
 if ! [ -x "$(command -v composer)" ]; then
   brew install composer
