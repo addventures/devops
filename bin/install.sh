@@ -20,15 +20,28 @@ if ! [ -x "$(command -v composer)" ]; then
   chmod 755 /usr/local/bin/composer
 fi
 
+# On OSX, running git without git installed prompts the xcode install.
+git
+
+if ! [ -x "$(command -v fin)" ]; then
+  bash <(curl -fsSL https://get.docksal.io)
+fi
+
 # Clone this project to ~/sys/project/devops.
+devops_git_url="git@github.com:addventures/devops.git"
+devops_path="${HOME}/sys/project/devops"
+git clone "${devops_git_url}" "${devops_path}"
 
 # Run composer install.
+cd "${devops_path}"
+composer install
 
 # Add global symlink to add command.
 path_add_symlink="/usr/local/bin/add"
-path_add_symlink_target="${HOME}/sys/project/devops/vendor/bin/blt"
+path_add_symlink_target="${devops_path}/vendor/bin/blt"
 if [ -L ${my_link} ] ; then
   sudo ln -s "${path_add_symlink_target}" "${path_add_symlink}"
 fi
 
-# add Run sys:init
+# Run sys:init for first time set up.
+add sys:init
