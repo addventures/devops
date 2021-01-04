@@ -61,6 +61,9 @@ class InitCommand extends BaseCommand {
     $path_ssh_key = "{$path_ssh}/id_rsa";
     if (!$this->fs->exists($path_ssh_key)) {
       $this->notice("No SSH key could be found. Creating one.");
+      $this->taskExecStack()
+        ->exec("ssh-keygen -t rsa -b 4096 -C {$options['email']}")
+        ->run();
     }
 
     $path_ssh_keys = $this->getSshKeys();
