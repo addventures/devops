@@ -20,6 +20,7 @@ fi
 
 # Confirm brew version of php.
 path_profile="${HOME}/.profile"
+touch "${path_profile}"
 if ! grep -q "/usr/local/opt/php@7.4" "${path_profile}"; then
   brew install php@7.4
   echo 'export PATH="/usr/local/opt/php@7.4/bin:$PATH"' >> "${path_profile}"
