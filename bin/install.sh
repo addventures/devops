@@ -26,11 +26,12 @@ fi
 git
 
 if ! [ -x "$(command -v fin)" ]; then
+  brew install virtualbox --cask
   bash <(curl -fsSL https://get.docksal.io)
 fi
 
 # Clone this project to ~/sys/project/devops.
-devops_git_url="git@github.com:addventures/devops.git"
+devops_git_url="https://github.com/addventures/devops.git"
 devops_path="${HOME}/sys/project/devops"
 git clone "${devops_git_url}" "${devops_path}"
 
