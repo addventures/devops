@@ -46,5 +46,5 @@ if [ -L ${my_link} ] ; then
   sudo ln -s "${path_add_symlink_target}" "${path_add_symlink}"
 fi
 
-# Run sys:init for first time set up.
+# Run sys:init for first time set up with prompts.
 add sys:init
