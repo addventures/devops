@@ -14,10 +14,12 @@ mkdir -p "${HOME}/sys/bin" &&
 mkdir -p "${HOME}/sys/lib" &&
 mkdir -p "${HOME}/sys/etc"
 
+if ! [ -x "$(command -v brew)" ]; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
 if ! [ -x "$(command -v composer)" ]; then
-  curl -sS https://getcomposer.org/installer | php
-  mv composer.phar /usr/local/bin/composer
-  chmod 755 /usr/local/bin/composer
+  brew install composer
 fi
 
 # On OSX, running git without git installed prompts the xcode install.
