@@ -35,6 +35,12 @@ fi
 # On OSX, running git without git installed prompts the xcode install.
 git
 
+if ! [ -x "$(command -v VirtualBox)" ]; then
+  brew install virtualbox --cask
+  echo -e "Virtual Box was installed by Brew. You may be prompted to restart. Complete any permissions or other steps and then re-run this script."
+  exit 0
+fi
+
 if ! [ -x "$(command -v fin)" ]; then
   brew install virtualbox --cask
   bash <(curl -fsSL https://get.docksal.io)

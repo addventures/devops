@@ -67,7 +67,7 @@ class InitCommand extends BaseCommand {
     }
 
     $path_ssh_keys = $this->getSshKeys();
-    $ssh_key_path = $this->io()->choice("Which SSH key do you want to use for our projects", $path_ssh_keys, 0);
+    $ssh_key_path = $this->io()->choice("Which SSH key do you want to use for our projects", $path_ssh_keys, $this->getConfigEnv()->get("ssh.key"));
     if (isset($path_ssh_keys[$ssh_key_path])) {
       $ssh_key_path = $path_ssh_keys[$ssh_key_path];
     }
