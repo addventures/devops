@@ -24,7 +24,7 @@ class InitCommand extends BaseCommand {
     'id' => InputOption::VALUE_OPTIONAL,
     'template' => InputOption::VALUE_OPTIONAL,
     'aceuuid' => InputOption::VALUE_OPTIONAL,
-    'githuburl' => InputOption::VALUE_OPTIONAL,
+    'git_url' => InputOption::VALUE_OPTIONAL,
   ]) {
 
     $config_sys = $this->getConfigSys();
@@ -49,8 +49,11 @@ class InitCommand extends BaseCommand {
       'aceuuid' => [
         'label' => "Acquia Cloud Application UUID",
       ],
-      'githuburl' => [
+      'git_url' => [
         'label' => "Github Web URL",
+      ],
+      'base_path' => [
+        'label' => 'Base path within host with leading "/"',
       ],
     ];
 
@@ -76,7 +79,7 @@ class InitCommand extends BaseCommand {
       'platform' => $options['id'],
       'aceuuid' => $options['aceuuid'],
       'template' => $options['template'],
-      'githuburl' => $options['githuburl'],
+      'git_url' => $options['git_url'],
       'created' => $this->getDateString(),
     ];
     $this->setConfigSys($config_env);
@@ -89,7 +92,7 @@ class InitCommand extends BaseCommand {
       ->dir($path_platform)
       ->exec("rm -rf .git")
       ->exec("git init")
-      ->exec("git remote add origin {$options['githuburl']}")
+      ->exec("git remote add origin {$options['git_url']}")
       ->exec("git checkout -b develop")
       ->run();
 

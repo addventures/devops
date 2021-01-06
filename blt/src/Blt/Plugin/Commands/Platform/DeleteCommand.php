@@ -22,9 +22,34 @@ class DeleteCommand extends BaseCommand {
     'platform' => InputOption::VALUE_OPTIONAL,
   ]) {
 
-    if (empty($options['platform'])) {
-      $options['platform'] = $this->io()->choice("Select a platform", $this->getOptionEnvPlatform());
-    }
+    $inputs = [
+      'platform' => [
+        'label' => "Platform",
+        'type' => 'choice',
+        'choice' => $this->getOptionEnvPlatform(),
+      ],
+    ];
+
+    $defaults = [];
+
+    $options = $this->buildInput($inputs, $options, $defaults);
+
+    $platform_id_env = "{$options['platform']}";
+
+    $path_platform = $this->getPath("platform.{$platform_id_env}");
+
+    $this->taskExecStack()
+      ->dir($path_platform)
+      ->exec("fin p rm -f")
+      ->run();
+
+    $this->taskExecStack()
+      ->exec("rm -rf {$path_platform}")
+      ->run();
+
+    $config_env = $this->getConfigEnv()->export();
+    unset($config_env['platform'][$platform_id_env]);
+    $this->setConfigEnv($config_env);
 
   }
 

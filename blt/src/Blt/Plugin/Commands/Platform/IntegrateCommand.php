@@ -53,14 +53,18 @@ class IntegrateCommand extends BaseCommand {
     // Run fin init.
     $path_docksal = "{$pathroot}/.docksal";
     if (!$this->fs->exists($path_docksal)) {
-      $this->taskExecStack()
+      $result = $this->taskExecStack()
         ->dir($pathroot)
-        ->exec("fin init")
+        ->exec("echo 'y' | fin init")
         ->exec("fin config set DOCKSAL_STACK=acquia")
         ->exec("fin config set COMPOSER_MEMORY_LIMIT=-1")
         ->exec("fin config set XDEBUG_ENABLED=1")
         ->exec("fin p reset -f")
+        ->stopOnFail(TRUE)
         ->run();
+      if ($result->getExitCode()) {
+        throw new \Exception("Error starting Docksal.");
+      }
     }
 
     $path_grumphp_source = "{$this->pathProject}/template/grumphp.yml.twig";
@@ -90,9 +94,9 @@ class IntegrateCommand extends BaseCommand {
 
     if (empty($composer_build['require'][$this->projectName])) {
 
-      $result = $this->taskComposerRequire()
+      $result = $this->taskExecStack()
         ->dir($pathcomposer)
-        ->dependency($this->projectName)
+        ->exec("fin exec 'composer require {$this->projectName}'")
         ->run();
 
       if ($result->getExitCode() == 2) {
@@ -102,12 +106,16 @@ class IntegrateCommand extends BaseCommand {
           $this->taskExecStack()
             ->exec("rm {$pathcomposer}/composer.lock")
             ->exec("rm -rf {$pathcomposer}/vendor rm -rf {$path_docroot}/core {$path_docroot}/modules/contrib {$path_docroot}/themes/contrib")
+            ->stopOnFail(TRUE)
             ->run();
 
-          $this->taskComposerRequire()
+          $result = $this->taskExecStack()
             ->dir($pathcomposer)
-            ->dependency($this->projectName)
+            ->exec("fin exec 'composer require {$this->projectName}'")
             ->run();
+          if ($result->getExitCode()) {
+          #  throw new \Exception("Composer build process failed.");
+          }
         }
       }
 

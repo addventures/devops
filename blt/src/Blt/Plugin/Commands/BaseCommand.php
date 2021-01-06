@@ -171,6 +171,27 @@ class BaseCommand extends BltTasks {
     $path["config_sys"] = "{$this->pathSys}/project/devops/etc/sys.yml";
     $path["ssh"] = "{$this->pathHome}/.ssh";
 
+    if (stripos($path_id, '.') !== FALSE) {
+      $path_pieces = explode('.', $path_id);
+      if (!empty($path_pieces[1])) {
+        $path_type = $path_pieces[0];
+        $path_id = $path_pieces[1];
+
+        switch ($path_type) {
+
+          case "platform";
+            $path = "{$this->pathSys}/platform/{$path_id}";
+            break;
+
+          default:
+
+            break;
+
+        }
+      }
+      return $path;
+    }
+
     if (!empty($path_id)) {
       if (empty($path[$path_id])) {
         throw new \Exception("Path is not defined: {$path_id}");
@@ -205,6 +226,32 @@ class BaseCommand extends BltTasks {
       $option[$platform_id] = $platform_id;
     }
     return $option;
+  }
+
+  /**
+   * @param $platform_id_sys
+   *
+   * @return string
+   * @throws \Exception
+   */
+  public function buildEnvPlatformId($platform_id_sys) {
+
+    $config_env = $this->getConfigEnv();
+
+    if (!$config_env->get("platform.{$platform_id_sys}")) {
+      return $platform_id_sys;
+    }
+
+    $count = 2;
+    while (TRUE) {
+      $platform_id_env = "{$platform_id_sys}{$count}";
+      if (!$config_env->get("platform.{$platform_id_env}")) {
+        break;
+      }
+      $count++;
+    }
+
+    return $platform_id_env;
   }
 
   /**

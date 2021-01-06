@@ -22,10 +22,6 @@ class AddCommand extends BaseCommand {
    */
   public function exec($options = [
     'platform' => InputOption::VALUE_OPTIONAL,
-    'id' => InputOption::VALUE_OPTIONAL,
-    'label' => InputOption::VALUE_OPTIONAL,
-    'hostname' => InputOption::VALUE_OPTIONAL,
-    'sync' => TRUE,
   ]) {
 
     $inputs = [
@@ -33,9 +29,6 @@ class AddCommand extends BaseCommand {
         'label' => "Platform",
         'type' => 'choice',
         'choice' => $this->getOptionSysPlatform(),
-      ],
-      'label' => [
-        'label' => "Acquia Cloud Application UUID",
       ],
     ];
 
@@ -51,18 +44,60 @@ class AddCommand extends BaseCommand {
       $options['hostname'] = "{$options['id']}.local";
     }
 
+    $platform_id_sys = $options['id'];
+    $platform_config = $this->getConfigSys()->get("platform.{$platform_id_sys}");
+
+    $platform_id_env = $this->buildEnvPlatformId($platform_id_sys);
+    $virtual_host = "{$platform_id_env}.local";
+
+    $base_path = !empty($platform_config['base_path']) ? $platform_config['base_path'] : NULL;
+    $url = "http://{$virtual_host}{$base_path}";
+
     // Add to env.yml.
     $config_env = $this->getConfigEnv()->export();
-    $config_env['platform'][$options['id']] = [
-      'id' => $options['id'],
+    $config_env['platform'][$platform_id_env] = [
+      'id' => $platform_id_env,
       'platform' => $options['platform'],
-      'hostname' => $options['hostname'],
+      'hostname' => $virtual_host,
+      'url' => $url,
       'created' => $this->getDateString(),
       'role' => 'dev',
     ];
     $this->setConfigEnv($config_env);
 
-    // Add host.
+    $git_url = $platform_config['git_url'];
+    $path_platform = $this->getPath("platform.{$platform_id_env}");
+
+    $this->taskExecStack()
+      ->exec("git clone {$git_url} {$path_platform}")
+      ->run();
+
+    $ssh_key = $this->getConfigEnv()->get("ssh.key");
+    $ssh_key_pieces = explode('/', $ssh_key);
+    $ssh_key_agent = end($ssh_key_pieces);
+
+    $this->taskExecStack()
+      ->dir($path_platform)
+      ->exec("fin config set VIRTUAL_HOST='{$virtual_host}'")
+      ->exec("fin hosts add")
+      ->exec("fin p start")
+      ->exec("fin ssh-key add {$ssh_key_agent}")
+      ->exec("fin exec 'composer install'")
+      ->exec("fin exec 'echo y | /var/www/vendor/bin/blt sync:db'")
+      ->exec("fin exec 'echo y | /var/www/vendor/bin/blt sync:files'")
+      ->run();
+
+    $result = $this->taskExecStack()
+      ->dir($path_platform)
+      ->exec("fin exec 'drush uli --uri=\"{$url}\"'")
+      ->printOutput(FALSE)
+      ->run();
+
+    $url_uri = $result->getMessage();
+
+    $this->taskExecStack()
+      ->exec("open {$url_uri}")
+      ->run();
 
   }
 

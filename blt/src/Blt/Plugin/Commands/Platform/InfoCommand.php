@@ -3,6 +3,7 @@
 namespace Add\Blt\Plugin\Commands\Platform;
 
 use Add\Blt\Plugin\Commands\BaseCommand;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Defines the "platform:info" command.
@@ -18,8 +19,18 @@ class InfoCommand extends BaseCommand {
    * @command platform:info
    */
   public function exec($options = [
-    'ni' => FALSE,
+    "platform" => InputOption::VALUE_OPTIONAL
   ]) {
+
+    if (!empty($options['platform'])) {
+      $config_key = "platform.{$options['platform']}";
+    }
+    else {
+      $config_key = "platform";
+    }
+
+    $this->printArrayAsTable($this->getConfigEnv()->get($config_key));
+
   }
 
 }
