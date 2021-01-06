@@ -76,6 +76,11 @@ class InitCommand extends BaseCommand {
 
     $this->setConfigEnv($env_config);
 
+    $this->taskExecStack()
+      ->exec("git config --global user.name '{$options['full_name']}'")
+      ->exec("git config --global user.email '{$options['email']}'")
+      ->run();
+
     $this->success("Finished initializing local host system. Start playing!");
 
   }
