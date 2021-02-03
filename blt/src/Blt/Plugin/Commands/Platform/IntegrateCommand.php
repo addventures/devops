@@ -23,17 +23,13 @@ class IntegrateCommand extends BaseCommand {
    * @throws \Exception
    */
   public function exec($options = [
-    'pathroot' => InputOption::VALUE_OPTIONAL,
-    'pathcomposer' => InputOption::VALUE_OPTIONAL,
+    'path' => InputOption::VALUE_OPTIONAL,
     'appid' => InputOption::VALUE_OPTIONAL,
   ]) {
 
     $inputs = [
-      'pathroot' => [
+      'path' => [
         'label' => "Absolute path to directory of Drupal project root",
-      ],
-      'pathcomposer' => [
-        'label' => "Absolute path to directory of Drupal project composer build",
       ],
       'appid' => [
         'label' => "Acquia shortname app ID such as \"omnicare\"",
@@ -44,22 +40,50 @@ class IntegrateCommand extends BaseCommand {
 
     $options = $this->buildInput($inputs, $options, $defaults);
 
-    $pathroot = $options['pathroot'];
-    $pathcomposer = $options['pathcomposer'];
-    $pathcomposer_build = "{$pathcomposer}/composer.json";
-    $path_docroot = "{$pathroot}/{$this->relPathDocroot}";
+    $path_root = $options['path'];
+    $path_docroot = "{$path_root}/{$this->relPathDocroot}";
     $appid = $options['appid'];
 
+    if ($this->fs->exists("{$path_root}/composer.json")) {
+      $path_composer = $path_root;
+    }
+    elseif ($this->fs->exists("{$path_docroot}/composer.json")) {
+      $move_composer = $this->io()->askQuestion(new Question("Composer was installed to the wrong location within the docroot at {$path_docroot} instead of {$path_root}. Do you want to move it? (y/n)", 'n'));
+      if ($move_composer == 'y') {
+        $result = $this->taskExecStack()
+          ->exec("mv {$path_docroot}/composer.json {$path_root}")
+          ->exec("mv {$path_docroot}/composer.lock {$path_root}")
+          ->exec("rm -rf {$path_docroot}/vendor rm -rf {$path_docroot}/core {$path_docroot}/modules/contrib {$path_docroot}/themes/contrib")
+          ->stopOnFail(TRUE)
+          ->run();
+
+        if ($result->getExitCode()) {
+          throw new \Exception("Composer build move failed.");
+        }
+      }
+      else {
+        throw new \Exception("Composer is installed at wrong location.");
+      }
+
+      $path_composer = $path_root;
+    }
+    else {
+      throw new \Exception("composer.json not found.");
+    }
+
+    $path_composer_json = "{$path_composer}/composer.json";
+
     // Run fin init.
-    $path_docksal = "{$pathroot}/.docksal";
+    $path_docksal = "{$path_root}/.docksal";
     if (!$this->fs->exists($path_docksal)) {
       $result = $this->taskExecStack()
-        ->dir($pathroot)
+        ->dir($path_root)
         ->exec("echo 'y' | fin init")
         ->exec("fin config set DOCKSAL_STACK=acquia")
         ->exec("fin config set COMPOSER_MEMORY_LIMIT=-1")
         ->exec("fin config set XDEBUG_ENABLED=1")
         ->exec("fin p reset -f")
+        ->exec("fin exec 'sudo composer self-update --1'")
         ->stopOnFail(TRUE)
         ->run();
       if ($result->getExitCode()) {
@@ -68,19 +92,18 @@ class IntegrateCommand extends BaseCommand {
     }
 
     $path_grumphp_source = "{$this->pathProject}/template/grumphp.yml.twig";
-    $path_grumphp_target = "{$pathcomposer}/grumphp.yml";
+    $path_grumphp_target = "{$path_composer}/grumphp.yml";
     if (!$this->fs->exists($path_grumphp_target)) {
       $this->fs->copy($path_grumphp_source, $path_grumphp_target);
     }
 
-    // Run composer require devops.
-    $pathcomposer_json = "{$pathcomposer_build}/composer.json";
-
-    if (!$composer_build = $this->fs->getFileContent($pathcomposer_build)) {
-      throw new \Exception("Composer build does not exist at: {$pathcomposer_json}");
+    if (!$composer_build = $this->fs->getFileContent($path_composer_json)) {
+      throw new \Exception("Composer build does not exist at: {$path_composer_json}");
     }
 
-    $composer_build = json_decode($composer_build, TRUE);
+    if (!$composer_build = json_decode($composer_build, TRUE)) {
+      throw new \Exception("Error parsing composer build at: {$path_composer_json}");
+    }
 
     // Confirm in repositories.
     if (empty($composer_build['repositories'][$this->projectName])) {
@@ -88,14 +111,37 @@ class IntegrateCommand extends BaseCommand {
         'type' => 'vcs',
         'url' => 'https://github.com/addventures/devops',
       ];
-      $this->fs->setFileContent($pathcomposer_build, json_encode($composer_build, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
-
     }
+
+    $dependencies_remove = [
+      'wikimedia/composer-merge-plugin',
+      'composer/installers',
+      'cweagans/composer-patches',
+      'oomphinc/composer-installers-extender,'
+    ];
+    foreach ($dependencies_remove as $dependency) {
+      if (isset($composer_build['require'][$dependency])) {
+        unset($composer_build['require'][$dependency]);
+      }
+    }
+
+    // Fix library types.
+    $map_library_type = [
+      'library' => 'drupal-library',
+    ];
+    foreach ($map_library_type as $original_type => $new_type) {
+      if (in_array($original_type, $composer_build['extra']['installer-types'])) {
+        $key = array_search($original_type, $composer_build['extra']['installer-types']);
+        $composer_build['extra']['installer-types'][$key] = $new_type;
+      }
+    }
+
+    $this->fs->setFileContent($path_composer_json, json_encode($composer_build, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
 
     if (empty($composer_build['require'][$this->projectName])) {
 
       $result = $this->taskExecStack()
-        ->dir($pathcomposer)
+        ->dir($path_composer)
         ->exec("fin exec 'composer require {$this->projectName}'")
         ->run();
 
@@ -104,17 +150,17 @@ class IntegrateCommand extends BaseCommand {
         $reset_composer = $this->io()->askQuestion(new Question("There was an issue with composer require command. Do you want to delete composer.lock, delete dependency directories, and try again? (y/n)", 'n'));
         if ($reset_composer == 'y') {
           $this->taskExecStack()
-            ->exec("rm {$pathcomposer}/composer.lock")
-            ->exec("rm -rf {$pathcomposer}/vendor rm -rf {$path_docroot}/core {$path_docroot}/modules/contrib {$path_docroot}/themes/contrib")
+            ->exec("rm {$path_composer}/composer.lock")
+            ->exec("rm -rf {$path_composer}/vendor rm -rf {$path_docroot}/core {$path_docroot}/modules/contrib {$path_docroot}/themes/contrib")
             ->stopOnFail(TRUE)
             ->run();
 
           $result = $this->taskExecStack()
-            ->dir($pathcomposer)
+            ->dir($path_composer)
             ->exec("fin exec 'composer require {$this->projectName}'")
             ->run();
           if ($result->getExitCode()) {
-          #  throw new \Exception("Composer build process failed.");
+            throw new \Exception("Composer build process failed.");
           }
         }
       }
@@ -136,7 +182,7 @@ class IntegrateCommand extends BaseCommand {
 
     // @todo replace variables in twig.
     $path_settings_php_source = "{$this->pathProject}/template/blt.yml.twig";
-    $path_settings_php_target = "{$pathcomposer}/blt/blt.yml";
+    $path_settings_php_target = "{$path_composer}/blt/blt.yml";
     if (!$this->fs->exists($path_settings_php_target)) {
       $this->fs->copy($path_settings_php_source, $path_settings_php_target);
     }
@@ -152,8 +198,8 @@ class IntegrateCommand extends BaseCommand {
       $this->fs->setFileContent($path_settings_php_main, $settings_php_content);
     }
 
-    $path_drush_alias_dir = "{$pathcomposer}/drush/sites";
-    $path_drush_alias = "{$pathcomposer}/drush/sites/{$appid}.site.yml";
+    $path_drush_alias_dir = "{$path_composer}/drush/sites";
+    $path_drush_alias = "{$path_composer}/drush/sites/{$appid}.site.yml";
     if (!$this->fs->exists($path_drush_alias)) {
       $this->copyDrushAliasesToPath([$appid], $path_drush_alias_dir);
     }

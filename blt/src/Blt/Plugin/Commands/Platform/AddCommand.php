@@ -82,6 +82,7 @@ class AddCommand extends BaseCommand {
       ->exec("fin hosts add")
       ->exec("fin p start")
       ->exec("fin ssh-key add {$ssh_key_agent}")
+      ->exec("fin exec 'sudo composer self-update --1'")
       ->exec("fin exec 'composer install'")
       ->exec("fin exec 'echo y | /var/www/vendor/bin/blt sync:db'")
       ->exec("fin exec 'echo y | /var/www/vendor/bin/blt sync:files'")

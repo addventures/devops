@@ -41,6 +41,14 @@ if ! [ -x "$(command -v VirtualBox)" ]; then
   exit 0
 fi
 
+if ! [ -x "$(command -v docker)" ]; then
+  brew install docker
+fi
+
+if ! [ -x "$(command -v docker-machine)" ]; then
+  brew install docker-machine
+fi
+
 if ! [ -x "$(command -v fin)" ]; then
   brew install virtualbox --cask
   bash <(curl -fsSL https://get.docksal.io)

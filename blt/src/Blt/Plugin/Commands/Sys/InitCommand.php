@@ -81,6 +81,10 @@ class InitCommand extends BaseCommand {
       ->exec("git config --global user.email '{$options['email']}'")
       ->run();
 
+    $this->taskExecStack()
+      ->exec("composer config -g github-oauth.github.com {$options['github_token']}")
+      ->run();
+
     $this->success("Finished initializing local host system. Start playing!");
 
   }

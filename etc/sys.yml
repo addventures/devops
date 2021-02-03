@@ -1,5 +1,5 @@
 platform:
-    cvs_hub: { label: 'CVS Hub', git_url: '', ace_app_id: '', template: null }
+    cvs_hub: { id: cvs-hub, platform: cvs-hub, label: 'CVS Hub', git_url: 'git@github.com:addventures/cvs-hub.git', aceuuid: '82558-d4195387-95f4-4ec0-a480-fecfa772e144', template: null }
     omnicare: { label: Omnicare, git_url: '', ace_app_id: '', template: null }
     cvs-bob: { id: cvs-bob, platform: cvs-bob, aceuuid: a3e8821f-d629-4754-9f16-07d7ee5ad6bb, template: hastings, git_url: 'git@github.com:addventures/cvs-bob.git', created: '2020-11-23T18:01:30T', base_path: '/bestofourbrands' }
 template:
