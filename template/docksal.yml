@@ -1,0 +1,26 @@
+version: "2.1"
+
+services:
+
+  cli:
+    extends:
+      file: ${HOME}/.docksal/stacks/services.yml
+      service: cli
+    volumes:
+      - project_root:/var/www:rw,nocopy,cached  # Project root volume
+      - docksal_ssh_agent:/.ssh-agent:ro  # Shared ssh-agent socket
+      - ${SSH_AUTH_SOCK_DIR}:${SSH_AUTH_SOCK_DIR}:ro # Shared directory for SSH key forwarding support
+      - cli_home:/home/docker  # Write-heavy directories should be in volumes. See https://github.com/docksal/docksal/issues/325
+      - composer_cache:/home/docker/.composer/cache
+      - npm_cache:/home/docker/.npm
+
+  mail:
+    extends:
+      file: ${HOME}/.docksal/stacks/services.yml
+      service: mail
+
+volumes:
+  composer_cache:
+    external: true
+  npm_cache:
+    external: true

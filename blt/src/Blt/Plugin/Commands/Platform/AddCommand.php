@@ -67,6 +67,7 @@ class AddCommand extends BaseCommand {
 
     $git_url = $platform_config['git_url'];
     $path_platform = $this->getPath("platform.{$platform_id_env}");
+    $path_docroot = "{$path_platform}/docroot";
 
     $this->taskExecStack()
       ->exec("git clone {$git_url} {$path_platform}")
@@ -79,6 +80,7 @@ class AddCommand extends BaseCommand {
     $this->taskExecStack()
       ->dir($path_platform)
       ->exec("fin config set VIRTUAL_HOST='{$virtual_host}'")
+      ->exec("fin config set CLI_IMAGE=docksal/cli:2.11-php7.3")
       ->exec("fin hosts add")
       ->exec("fin p start")
       ->exec("fin ssh-key add {$ssh_key_agent}")
