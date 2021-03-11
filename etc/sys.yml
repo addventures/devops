@@ -1,7 +1,7 @@
 platform:
     cvs_hub: { id: cvs-hub, platform: cvs-hub, label: 'CVS Hub', git_url: 'git@github.com:addventures/cvs-hub.git', aceuuid: '82558-d4195387-95f4-4ec0-a480-fecfa772e144', template: null }
     cvs-bob: { id: cvs-bob, platform: cvs-bob, aceuuid: a3e8821f-d629-4754-9f16-07d7ee5ad6bb, template: hastings, git_url: 'git@github.com:addventures/cvs-bob.git', created: '2020-11-23T18:01:30T', base_path: '/bestofourbrands' }
-    cvs-howwework: { id: cvs-howwework, platform: cvs-howwework, aceuuid: f7756633-3ea9-43a1-a58a-81c960f9e162, template: null, git_url: 'git@github.com:addventures/cvs-howwework.git', created: '2020-11-23T18:01:30T', base_path: null }
+    cvs-howwework: { id: cvs-howwework, platform: cvs-howwework, aceuuid: f7756633-3ea9-43a1-a58a-81c960f9e162, template: null, git_url: 'git@github.com:add-cvs/cvs-howwework.git', created: '2020-11-23T18:01:30T', base_path: null }
     cvs-coram-hc: { id: cvs-coram-hc, platform: cvs-coram-hc, aceuuid: c066b7a6-a962-4845-b2a0-0dcf40685c73, template: null, git_url: 'git@github.com:add-cvs/cvs-coram-hc.git', created: '2020-11-23T18:01:30T', base_path: null }
 template:
     hastings: { label: Hastings, git: { url: 'git@github.com:addventures/hastings.git', branch: refactor }, drush_alias: coderedsafety.dev }
