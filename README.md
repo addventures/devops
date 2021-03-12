@@ -1,5 +1,10 @@
 # Addventures: DevOps
 
+## THIS PROJECT HAS BEEN ARCHIVED HERE AND MOVED TO GITHUB ENTERPRISE ACCOUNT REPO:
+https://github.com/addventures-engineering/devops
+
+---
+
 The purpose of this project is to provide formal DevOps management for a set of
 Drupal instances (platforms) and multisites (apps) owned by an organization.
 
